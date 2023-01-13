@@ -331,7 +331,7 @@ void file_lock_test(char *argv[]) {
         pid = fork();
     }
 
-    std::string lock_file = "/run/lock/serving_lock/test.lock";
+    std::string lock_file = "/run/lock/test.lock";
     pid = getpid();
     FileLock f_lock(lock_file);
 
@@ -437,7 +437,7 @@ void create_mmap_file_1(FileLock *f_lock,std::string mmap_file,off_t size,bool& 
 template<typename T>
 T* MMapAllocator<T>::allocate(std::string mem_id_str,off_t mem_size,bool& mem_not_exist) {
   
-    std::string mmap_file = "/dev/shm/serving_memory/" + mem_id_str;
+    std::string mmap_file = "/dev/shm/" + mem_id_str;
     mem_size = mem_size * sizeof(T);
     if(mmap_file_exist(mem_id_str)) {
       mem_not_exist = false;
@@ -477,15 +477,7 @@ class CPUMmapAllocator : public Allocator {
   bool MemNotExist() override { return mem_not_exist_; }
 
   void* AllocateRaw(size_t alignment, size_t num_bytes) override {
-    // std::stringstream ss;
-    // ss<<num_bytes;
-    // std::string num_bytes_str = ss.str();
-    // std::string mmap_id = this->mmap_id_ + num_bytes_str;
-
-    // std::string lock_file = "/home/tank/lijie/serving_locks/" + mmap_id;
-    // std::string memory_id_str = mmap_id;
-
-    std::string lock_file = "/run/lock/serving_lock" + this->mmap_id_;
+    std::string lock_file = "/run/lock/" + this->mmap_id_;
     std::string memory_id_str = this->mmap_id_;
 
     MMapAllocator<char> mmap_alloc(lock_file);
